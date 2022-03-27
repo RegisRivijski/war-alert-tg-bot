@@ -6,11 +6,15 @@ const vadimklimenkoOrigin = `${config.rest.vadimklimenko.protocol}//${config.res
 
 module.exports = {
   getActiveAlertsUkrzen() {
-    return axios.get(`${ukrzenWarOrigin}/alerts/active.json`)
+    return axios.get(`${ukrzenWarOrigin}/alerts/active.json`, {
+      timeout: 10000,
+    })
       .then((response) => response.data);
   },
   getActiveAlertsVC() {
-    return axios.get(`${vadimklimenkoOrigin}/map/statuses.json`)
+    return axios.get(`${vadimklimenkoOrigin}/map/statuses.json`, {
+      timeout: 15000,
+    })
       .then((response) => response.data);
   },
 };
