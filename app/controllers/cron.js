@@ -103,12 +103,12 @@ module.exports = {
         }
       }
 
-      const users = await usersManager.getAllUsers()
-        .catch((e) => {
-          console.error('cronController warAlertNotification usersManager getAllUsers error:', e.message);
-        });
-
       if (reply) {
+        const users = await usersManager.getAllUsers()
+          .catch((e) => {
+            console.error('cronController warAlertNotification usersManager getAllUsers error:', e.message);
+          });
+
         for await (const user of users) {
           await cronHelper.sendMessageWithBlockCheck(bot, user, reply)
             .catch((e) => {
