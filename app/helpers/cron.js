@@ -14,7 +14,7 @@ module.exports = {
       });
 
     if (!user.isBlocked) {
-      await delayHelper.delay(2000);
+      await delayHelper.delay(200);
       await bot.telegram.sendMessage(user.chatId, text)
         .catch((e) => {
           console.error('cron sendMessageWithBlockCheck bot sendMessage:', e.message);
