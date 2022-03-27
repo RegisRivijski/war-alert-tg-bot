@@ -59,11 +59,13 @@ module.exports = {
           console.error('cronController warAlertNotification usersManager getAllActiveUsers error:', e.message);
         });
 
-      for await (const user of users) {
-        await cronHelper.sendMessageWithBlockCheck(bot, user, reply)
-          .catch((e) => {
-            console.error('cronController warAlertNotification cronHelper sendMessageWithBlockCheck error:', e.message);
-          });
+      if (reply) {
+        for await (const user of users) {
+          await cronHelper.sendMessageWithBlockCheck(bot, user, reply)
+            .catch((e) => {
+              console.error('cronController warAlertNotification cronHelper sendMessageWithBlockCheck error:', e.message);
+            });
+        }
       }
     });
   },
