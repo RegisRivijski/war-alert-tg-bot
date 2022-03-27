@@ -54,9 +54,9 @@ module.exports = {
         }
       }
 
-      const users = await usersManager.getAllActiveUsers()
+      const users = await usersManager.getAllUsers()
         .catch((e) => {
-          console.error('cronController warAlertNotification usersManager getAllActiveUsers error:', e.message);
+          console.error('cronController warAlertNotification usersManager getAllUsers error:', e.message);
         });
 
       if (reply) {
