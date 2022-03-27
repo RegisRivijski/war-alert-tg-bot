@@ -3,27 +3,26 @@ const warAlertHelper = require('../helpers/warAlert');
 module.exports = {
 
   async warAlertCheckAll(ctx, next) {
-    let alerts = await warAlertHelper.getActiveAlertsUkrzen()
+    const alerts = await warAlertHelper.getActiveAlertsVC()
       .catch((e) => {
-        console.error('warAlertController warAlertCheckAll warAlertHelper getActiveAlertsUkrzen error:', e.message);
+        console.error('warAlertController warAlertCheckAll warAlertHelper getActiveAlertsVC error:', e.message);
+        throw e;
       });
 
-    if (!alerts) {
-      alerts = await warAlertHelper.getActiveAlertsVC()
-        .catch((e) => {
-          console.error('warAlertController warAlertCheckAll warAlertHelper getActiveAlertsVC error:', e.message);
-          throw e;
-        });
-    }
-
-    let reply;
+    let reply = '';
     if (alerts.length) {
-      reply = '🛑Увага! Повітряна тривога.🛑\n';
+      reply += '🛑Увага! Повітряна тривога.🛑\n';
       for (const alert of alerts) {
-        reply += `‼️ ${alert}.\n`;
+        reply += `‼️ ${alert.state}`;
+        if (alert.district) {
+          reply += `, ${alert.district}.\n`;
+        } else {
+          reply += '.\n';
+        }
       }
+
     } else {
-      reply = 'Повітряна тривога відсутня у всіх областях України.';
+      reply = 'Повітряна тривога відсутня по всіх областях України.';
     }
 
     await ctx.reply(reply)

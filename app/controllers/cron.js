@@ -8,7 +8,7 @@ const statesCache = new NodeCache();
 
 module.exports = {
   warAlertNotification(bot) {
-    cron.schedule('*/2 * * * *', async () => {
+    cron.schedule('* * * * *', async () => {
       const statesOld = statesCache.get('states');
       const statesNew = await warAlertManager.getActiveAlertsVC()
         .then((data) => data.states)
