@@ -41,9 +41,9 @@ module.exports = {
 
       if (states.length) statesCache.set('states', statesNew, 600000);
 
-      let reply;
+      let reply = '';
       if (result.enabled.length) {
-        reply = '🛑Увага! Повітряна тривога.🛑\n';
+        reply += '🛑Увага! Повітряна тривога.🛑\n';
         for (const state of result.enabled) {
           reply += `‼️ ${state}.\n`;
         }
