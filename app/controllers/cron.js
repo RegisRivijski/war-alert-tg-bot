@@ -30,7 +30,7 @@ module.exports = {
           } else if (!statesNew[state].enabled && statesOld[state].enabled) {
             result.disabled.push(state);
           }
-          const districts = Object.keys(state.districts);
+          const districts = Object.keys(statesNew[state].districts);
           for (const district of districts) {
             if (
               statesNew[state].districts[district].enabled
@@ -50,7 +50,7 @@ module.exports = {
           if (statesNew[state].enabled) {
             result.enabled.push(state);
           }
-          const districts = Object.keys(state.districts);
+          const districts = Object.keys(statesNew[state].districts);
           for (const district of districts) {
             if (statesNew[state].districts[district].enabled) {
               result.enabled.push(district);
