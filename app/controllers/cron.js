@@ -26,9 +26,15 @@ module.exports = {
       if (statesOld) {
         for (const state of states) {
           if (statesNew[state].enabled && !statesOld[state].enabled) {
-            result.enabled.push(state);
+            result.enabled.push({
+              state,
+              district: '',
+            });
           } else if (!statesNew[state].enabled && statesOld[state].enabled) {
-            result.disabled.push(state);
+            result.disabled.push({
+              state,
+              district: '',
+            });
           }
           const districts = Object.keys(statesNew[state].districts);
           for (const district of districts) {
@@ -36,24 +42,36 @@ module.exports = {
               statesNew[state].districts[district].enabled
               && !statesOld[state].districts[district].enabled
             ) {
-              result.enabled.push(district);
+              result.enabled.push({
+                state,
+                district,
+              });
             } else if (
               !statesNew[state].districts[district].enabled
               && statesOld[state].districts[district].enabled
             ) {
-              result.disabled.push(district);
+              result.disabled.push({
+                state,
+                district,
+              });
             }
           }
         }
       } else {
         for (const state of states) {
           if (statesNew[state].enabled) {
-            result.enabled.push(state);
+            result.enabled.push({
+              state,
+              district: '',
+            });
           }
           const districts = Object.keys(statesNew[state].districts);
           for (const district of districts) {
             if (statesNew[state].districts[district].enabled) {
-              result.enabled.push(district);
+              result.enabled.push({
+                state,
+                district,
+              });
             }
           }
         }
@@ -64,14 +82,24 @@ module.exports = {
       let reply = '';
       if (result.enabled.length) {
         reply += '🛑Увага! Повітряна тривога.🛑\n';
-        for (const state of result.enabled) {
-          reply += `‼️ ${state}.\n`;
+        for (const alert of result.enabled) {
+          reply += `‼️ ${alert.state}`;
+          if (alert.district) {
+            reply += `, ${alert.district}.\n`;
+          } else {
+            reply += '.\n';
+          }
         }
       }
       if (result.disabled.length) {
         reply += '🟩Відбій повітряної тривоги.🟩\n';
-        for (const state of result.disabled) {
-          reply += `‼️ ${state}.\n`;
+        for (const alert of result.disabled) {
+          reply += `‼️ ${alert.state}`;
+          if (alert.district) {
+            reply += `, ${alert.district}.\n`;
+          } else {
+            reply += '.\n';
+          }
         }
       }
 
