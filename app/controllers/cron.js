@@ -30,11 +30,31 @@ module.exports = {
           } else if (!statesNew[state].enabled && statesOld[state].enabled) {
             result.disabled.push(state);
           }
+          const districts = Object.keys(state.districts);
+          for (const district of districts) {
+            if (
+              statesNew[state].districts[district].enabled
+              && !statesOld[state].districts[district].enabled
+            ) {
+              result.enabled.push(district);
+            } else if (
+              !statesNew[state].districts[district].enabled
+              && statesOld[state].districts[district].enabled
+            ) {
+              result.disabled.push(district);
+            }
+          }
         }
       } else {
         for (const state of states) {
           if (statesNew[state].enabled) {
             result.enabled.push(state);
+          }
+          const districts = Object.keys(state.districts);
+          for (const district of districts) {
+            if (statesNew[state].districts[district].enabled) {
+              result.enabled.push(district);
+            }
           }
         }
       }
