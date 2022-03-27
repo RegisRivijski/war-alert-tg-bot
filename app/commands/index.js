@@ -6,7 +6,7 @@ const errorsHandler = require('../middlewares/errorsHandler');
 module.exports = (bot) => {
   bot
     .use(errorsHandler.onError)
-    .command('start', usersMiddleware.canReply, standardController.start)
+    .command('start', usersMiddleware.canReply, standardController.start, warAlertController.warAlertCheckAll)
     .command('help', usersMiddleware.canReply, standardController.help)
 
     // War alerts
