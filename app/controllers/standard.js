@@ -15,8 +15,7 @@ module.exports = {
   },
 
   async help(ctx, next) {
-    const reply = 'Даний бот повідомлятиме про повітряну тривогу у різних областях України.\n'
-      + 'Команди:\n'
+    const reply = 'Команди:\n'
       + '/waralertcheckall - отримання інформації про повітрянні тривогу по усій Україні.\n';
 
     await ctx.reply(reply)

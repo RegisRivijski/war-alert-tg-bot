@@ -18,7 +18,7 @@ module.exports = {
 
     let reply;
     if (alerts.length) {
-      reply = 'Повітряна тривога:\n';
+      reply = '🛑Увага! Повітряна тривога.🛑\n';
       for (const alert of alerts) {
         reply += `‼️ ${alert}.\n`;
       }

@@ -43,13 +43,13 @@ module.exports = {
 
       let reply;
       if (result.enabled.length) {
-        reply = 'Повітряна тривога:\n';
+        reply = '🛑Увага! Повітряна тривога.🛑\n';
         for (const state of result.enabled) {
           reply += `‼️ ${state}.\n`;
         }
       }
       if (result.disabled.length) {
-        reply += 'Відбій повітрянної тривоги:\n';
+        reply += '🟩Відбій повітряної тривоги.🟩\n';
         for (const state of result.disabled) {
           reply += `‼️ ${state}.\n`;
         }
