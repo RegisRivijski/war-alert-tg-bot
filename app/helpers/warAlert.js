@@ -5,13 +5,13 @@ module.exports = {
   async getActiveAlertsVC() {
     const result = [];
     const statesNew = await warAlertManager.getActiveAlertsVC()
+      .then((data) => data.states)
       .catch((e) => {
         console.error('warAlertHelper getActiveAlerts warAlertManager getActiveAlertsVC error:', e.message);
         throw e;
       });
 
-    const states = Object.keys(statesNew.states);
-
+    const states = Object.keys(statesNew);
     for (const state of states) {
       if (statesNew[state].enabled) {
         result.push({
