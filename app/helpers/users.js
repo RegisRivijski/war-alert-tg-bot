@@ -9,7 +9,7 @@ module.exports = {
   },
 
   async getUserInfo(ctx) {
-    const chatId = ctx.update.message.from?.id;
+    const chatId = ctx.update.message.chat.id;
     let userInfo = await usersModel.findOne({ chatId })
       .catch((e) => {
         console.error('usersHelper getUserInfo usersModel findOne:', e);
