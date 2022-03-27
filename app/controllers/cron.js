@@ -26,7 +26,7 @@ module.exports = {
         for (const state of states) {
           if (statesNew[state].enabled && !statesOld[state].enabled) {
             result.enabled.push(state);
-          } else if (!statesNew[state.enabled && statesOld[state].enabled]) {
+          } else if (!statesNew[state].enabled && statesOld[state].enabled) {
             result.disabled.push(state);
           }
         }

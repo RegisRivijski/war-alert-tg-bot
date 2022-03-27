@@ -16,11 +16,13 @@ module.exports = {
 
     if (canReply) {
       await next();
-    } else {
-      user.isBlocked = true;
+    }
+
+    if (!canReply !== user.isBlocked) {
+      user.isBlocked = !canReply;
       await user.save()
         .catch((e) => {
-          console.error('usersMiddleware canReply user save error:', e.message);
+          console.error('cron sendMessageWithBlockCheck user save', e.message);
         });
     }
   },
