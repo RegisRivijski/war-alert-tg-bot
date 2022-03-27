@@ -14,6 +14,7 @@ module.exports = {
         .then((data) => data.states)
         .catch((e) => {
           console.error('cronController warAlertNotification warAlertManager getActiveAlertsVC error:', e.message);
+          return {};
         });
 
       const states = Object.keys(statesNew);
@@ -38,7 +39,7 @@ module.exports = {
         }
       }
 
-      statesCache.set('states', statesNew, 180000);
+      if (states.length) statesCache.set('states', statesNew, 600000);
 
       let reply;
       if (result.enabled.length) {
