@@ -3,18 +3,11 @@ const warAlertHelper = require('../helpers/warAlert');
 module.exports = {
 
   async warAlertCheckAll(ctx, next) {
-    let alerts = await warAlertHelper.getActiveAlertsUkrzen()
+    const alerts = await warAlertHelper.getActiveAlertsVC()
       .catch((e) => {
-        console.error('warAlertController warAlertCheckAll warAlertHelper getActiveAlertsUkrzen error:', e.message);
+        console.error('warAlertController warAlertCheckAll warAlertHelper getActiveAlertsVC error:', e.message);
+        throw e;
       });
-
-    if (!alerts) {
-      alerts = await warAlertHelper.getActiveAlertsVC()
-        .catch((e) => {
-          console.error('warAlertController warAlertCheckAll warAlertHelper getActiveAlertsVC error:', e.message);
-          throw e;
-        });
-    }
 
     let reply;
     if (alerts.length) {
