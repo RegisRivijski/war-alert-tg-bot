@@ -104,7 +104,7 @@ module.exports = {
       }
 
       if (reply) {
-        reply += '-  @warAlertTgUkraine  -';
+        reply += '\n-  @warAlertTgUkraine  -';
         const users = await usersManager.getAllUsers()
           .catch((e) => {
             console.error('cronController warAlertNotification usersManager getAllUsers error:', e.message);
