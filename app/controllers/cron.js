@@ -104,7 +104,12 @@ module.exports = {
           }
         }
       }
-      if (!result.enabled.length && !result.disabled.length && !allAlertsAreDisabledReplied) {
+      if (
+        !result.enabled.length
+        && !result.disabled.length
+        && !allAlertsAreDisabledReplied
+        && statesCache.has('allAlertsAreDisabledReplied')
+      ) {
         reply = 'Повітряна тривога відсутня по всіх областях України.\n';
       }
 
