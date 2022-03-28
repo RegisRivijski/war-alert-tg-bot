@@ -3,7 +3,6 @@ const rateLimit = require('telegraf-ratelimit');
 const ignoreOldMessages = require('telegraf-ignore-old-messages');
 const { Telegraf } = require('telegraf');
 
-const mongoose = require('./helpers/mongoose');
 const commands = require('./commands/index');
 const cron = require('./cron/index');
 
@@ -14,5 +13,4 @@ bot.use(ignoreOldMessages(1));
 commands(bot);
 cron.register(bot);
 
-mongoose.connect();
 bot.startPolling();
