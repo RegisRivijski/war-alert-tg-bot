@@ -1,3 +1,4 @@
 module.exports = {
   OWNER_CHAT_ID: 755610236,
+  CHANNEL_ID: -1001606585584,
 };

@@ -1,8 +1,10 @@
 const cron = require('node-cron');
 const NodeCache = require('node-cache');
 const warAlertManager = require('../managers/warAlert');
-const usersManager = require('../managers/users');
-const cronHelper = require('../helpers/cron');
+
+const {
+  CHANNEL_ID,
+} = require('../constants/index');
 
 const statesCache = new NodeCache();
 
@@ -106,17 +108,10 @@ module.exports = {
 
       if (reply) {
         reply += '\n-  @warAlertTgUkraine  -';
-        const users = await usersManager.getAllUsers()
+        await bot.telegram.sendMessage(CHANNEL_ID, reply)
           .catch((e) => {
-            console.error('cronController warAlertNotification usersManager getAllUsers error:', e.message);
+            console.error('cron warAlertNotification bot sendMessage:', e.message);
           });
-
-        for await (const user of users) {
-          await cronHelper.sendMessageWithBlockCheck(bot, user, reply)
-            .catch((e) => {
-              console.error('cronController warAlertNotification cronHelper sendMessageWithBlockCheck error:', e.message);
-            });
-        }
       }
     });
   },

@@ -21,9 +21,10 @@ module.exports = {
         }
       }
     } else {
-      reply = 'Повітряна тривога відсутня по всіх областях України.';
+      reply = 'Повітряна тривога відсутня по всіх областях України.\n';
     }
 
+    reply += '\n-  @warAlertTgUkraine  -';
     await ctx.reply(reply)
       .catch((e) => {
         console.error('warAlertController warAlertCheckAll ctx reply error:', e.message);
