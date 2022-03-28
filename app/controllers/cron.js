@@ -106,7 +106,7 @@ module.exports = {
         if (reply.length) reply += '\n';
         reply += '🟩Відбій повітряної тривоги.🟩\n';
         for (const alert of result.disabled) {
-          reply += `‼️ ${alert.state}`;
+          reply += `❕️ ${alert.state}`;
           if (alert.district) {
             reply += `, ${alert.district}.\n`;
           } else {
@@ -120,7 +120,7 @@ module.exports = {
 
       if (states.length) {
         statesCache.set('states', statesNew);
-        statesCache.set('alertsDisabled', alertsDisabled)
+        statesCache.set('alertsDisabled', alertsDisabled);
       }
 
       if (reply) {
