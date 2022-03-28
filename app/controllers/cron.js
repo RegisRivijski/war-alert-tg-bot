@@ -92,6 +92,7 @@ module.exports = {
         }
       }
       if (result.disabled.length) {
+        if (reply.length) reply += '\n';
         reply += '🟩Відбій повітряної тривоги.🟩\n';
         for (const alert of result.disabled) {
           reply += `‼️ ${alert.state}`;
