@@ -12,7 +12,8 @@ module.exports = {
   warAlertNotification(bot) {
     cron.schedule('* * * * *', async () => {
       const statesOld = statesCache.get('states');
-      const allAlertsAreDisabledReplied = statesCache.get('allAlertsAreDisabledReplied');
+      const alertsDisabledOld = statesCache.get('alertsDisabled');
+
       const statesNew = await warAlertManager.getActiveAlertsVC()
         .then((data) => data.states)
         .catch((e) => {
@@ -26,8 +27,12 @@ module.exports = {
         disabled: [],
       };
 
+      let alertsDisabled = true;
       if (statesOld) {
         for (const state of states) {
+          if (statesNew[state].enabled) {
+            alertsDisabled = false;
+          }
           if (statesNew[state].enabled && !statesOld[state].enabled) {
             result.enabled.push({
               state,
@@ -41,6 +46,9 @@ module.exports = {
           }
           const districts = Object.keys(statesNew[state].districts);
           for (const district of districts) {
+            if (statesNew[state].districts[district].enabled) {
+              alertsDisabled = false;
+            }
             if (
               statesNew[state].districts[district].enabled
               && !statesOld[state].districts[district].enabled
@@ -63,6 +71,7 @@ module.exports = {
       } else {
         for (const state of states) {
           if (statesNew[state].enabled) {
+            alertsDisabled = false;
             result.enabled.push({
               state,
               district: '',
@@ -71,6 +80,7 @@ module.exports = {
           const districts = Object.keys(statesNew[state].districts);
           for (const district of districts) {
             if (statesNew[state].districts[district].enabled) {
+              alertsDisabled = false;
               result.enabled.push({
                 state,
                 district,
@@ -104,22 +114,13 @@ module.exports = {
           }
         }
       }
-      if (
-        !result.enabled.length
-        && !result.disabled.length
-        && !allAlertsAreDisabledReplied
-        && statesCache.has('allAlertsAreDisabledReplied')
-      ) {
+      if (!alertsDisabledOld && alertsDisabled) {
         reply = 'Повітряна тривога відсутня по всіх областях України.\n';
       }
 
       if (states.length) {
-        statesCache.set('states', statesNew, 600000);
-        if (!result.enabled.length && !result.disabled.length) {
-          statesCache.set('allAlertsAreDisabledReplied', true);
-        } else {
-          statesCache.set('allAlertsAreDisabledReplied', false);
-        }
+        statesCache.set('states', statesNew);
+        statesCache.set('alertsDisabled', alertsDisabled)
       }
 
       if (reply) {
