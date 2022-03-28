@@ -12,6 +12,7 @@ module.exports = {
   warAlertNotification(bot) {
     cron.schedule('* * * * *', async () => {
       const statesOld = statesCache.get('states');
+      const allAlertsAreDisabledReplied = statesCache.get('allAlertsAreDisabledReplied');
       const statesNew = await warAlertManager.getActiveAlertsVC()
         .then((data) => data.states)
         .catch((e) => {
@@ -79,8 +80,6 @@ module.exports = {
         }
       }
 
-      if (states.length) statesCache.set('states', statesNew, 600000);
-
       let reply = '';
       if (result.enabled.length) {
         reply += '🛑Увага! Повітряна тривога.🛑\n';
@@ -103,6 +102,18 @@ module.exports = {
           } else {
             reply += '.\n';
           }
+        }
+      }
+      if (!result.enabled.length && !result.disabled.length && !allAlertsAreDisabledReplied) {
+        reply = 'Повітряна тривога відсутня по всіх областях України.\n';
+      }
+
+      if (states.length) {
+        statesCache.set('states', statesNew, 600000);
+        if (!result.enabled.length && !result.disabled.length) {
+          statesCache.set('allAlertsAreDisabledReplied', true);
+        } else {
+          statesCache.set('allAlertsAreDisabledReplied', false);
         }
       }
 
