@@ -114,11 +114,11 @@ module.exports = {
           }
         }
       }
-      if (!alertsDisabledOld && alertsDisabled) {
-        reply = 'Повітряна тривога відсутня по всіх областях України.\n';
-      }
 
       if (states.length) {
+        if (!alertsDisabledOld && alertsDisabled) {
+          reply = 'Повітряна тривога відсутня по всіх областях України.\n';
+        }
         statesCache.set('states', statesNew);
         statesCache.set('alertsDisabled', alertsDisabled);
       }
