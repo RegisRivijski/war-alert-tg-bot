@@ -4,6 +4,7 @@ services:
   war-alert-tg-bot:
     image: "war-alert-tg-bot"
     container_name: "war-alert-tg-bot"
+    restart: "always"
     build:
       context: ${PWD}
       dockerfile: Dockerfile
