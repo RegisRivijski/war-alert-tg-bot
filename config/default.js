@@ -4,7 +4,7 @@ module.exports = {
     version: '1.0.0',
   },
   bot: {
-    API_TOKEN: '5229279914:AAG9pEfSWUQErIKcM6OUBCN4h0bj8SPOr5g',
+    API_TOKEN: process.env.WAR_ALERT_TG_BOT_API_TOKEN,
     limit: {
       window: 1500,
       limit: 1,
@@ -12,18 +12,18 @@ module.exports = {
   },
   db: {
     mongodb: {
-      url: 'mongodb+srv://general:7js8hPKW6aLzSVP6@cluster0.baeyx.mongodb.net/warAlertTgBot?retryWrites=true&w=majority',
-      api_key: '8289a1d4-5258-4b6a-9790-13cde6e3300b',
+      url: process.env.MONGODB_WAR_ALERT_TG_BOT_URL,
+      api_key: process.env.MONGODB_WAR_ALERT_TG_BOT_API_KEY,
     },
   },
   rest: {
     ukrzen: {
-      protocol: 'https:',
-      host: 'war.ukrzen.in.ua',
+      protocol: process.env.UKRZEN_PROTOCOL,
+      host: process.env.URKZEN_HOST,
     },
     vadimklimenko: {
-      protocol: 'https:',
-      host: 'vadimklimenko.com',
+      protocol: process.env.VADIMKLIMENKO_PROTOCOL,
+      host: process.env.VADIMKLIMENKO_HOST,
     },
   },
 };
