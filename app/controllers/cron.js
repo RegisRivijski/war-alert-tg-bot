@@ -115,7 +115,7 @@ module.exports = {
         }
       }
 
-      if (states.length <= 1) {
+      if (states.length) {
         if (!alertsDisabledOld && alertsDisabled) {
           reply = 'Повітряна тривога відсутня у більшості областей України.\n';
         }
