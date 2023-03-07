@@ -3,6 +3,11 @@ module.exports = {
     name: 'war-alert-tg-bot',
     version: '1.0.0',
   },
+  telegramBotApi: {
+    protocol: process.env.TELEGRAM_BOT_API_PROTOCOL,
+    host: process.env.TELEGRAM_BOT_API_HOST,
+    port: process.env.TELEGRAM_BOT_API_PORT,
+  },
   bot: {
     API_TOKEN: process.env.WAR_ALERT_TG_BOT_API_TOKEN,
     limit: {
