@@ -3,7 +3,7 @@ const rateLimit = require('telegraf-ratelimit');
 const ignoreOldMessages = require('telegraf-ignore-old-messages');
 const { Telegraf } = require('telegraf');
 
-const apiRoot = `${config.telegramBotApi.port}//${config.telegramBotApi.host}:${config.telegramBotApi.port}`;
+const apiRoot = `${config.telegramBotApi.protocol}//${config.telegramBotApi.host}:${config.telegramBotApi.port}`;
 
 const commands = require('./commands/index');
 const cron = require('./cron/index');
