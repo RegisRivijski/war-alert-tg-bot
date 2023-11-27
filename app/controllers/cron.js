@@ -92,26 +92,18 @@ module.exports = {
 
       let reply = '';
       if (result.enabled.length) {
-        reply += '🛑Увага! Повітряна тривога.🛑\n';
+        reply += '🛑Увага! Оголошено повітряну тривогу!🛑\n';
         for (const alert of result.enabled) {
-          reply += `‼️ ${alert.state}`;
-          if (alert.district) {
-            reply += `, ${alert.district}.\n`;
-          } else {
-            reply += '.\n';
-          }
+          reply += `️ - ${alert.state}`;
+          reply += '.\n';
         }
       }
       if (result.disabled.length) {
         if (reply.length) reply += '\n';
         reply += '🟩Відбій повітряної тривоги.🟩\n';
         for (const alert of result.disabled) {
-          reply += `❕️ ${alert.state}`;
-          if (alert.district) {
-            reply += `, ${alert.district}.\n`;
-          } else {
-            reply += '.\n';
-          }
+          reply += ` - ${alert.state}`;
+          reply += '.\n';
         }
       }
 
@@ -124,7 +116,6 @@ module.exports = {
       }
 
       if (reply) {
-        reply += '\n-  @warAlertTgUkraine  -';
         await bot.telegram.sendMessage(CHANNEL_ID, reply)
           .catch((e) => {
             console.error('cron warAlertNotification bot sendMessage:', e.message);
