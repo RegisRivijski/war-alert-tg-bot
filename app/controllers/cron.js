@@ -30,60 +30,72 @@ module.exports = {
       let alertsDisabled = true;
       if (statesOld) {
         for (const state of states) {
-          if (statesNew[state].enabled) {
+          const stateDataNew = statesNew[state];
+          const stateDataOld = statesOld[state] || {};
+
+          if (stateDataNew.enabled) {
             alertsDisabled = false;
           }
-          if (statesNew[state].enabled && !statesOld[state].enabled) {
+
+          if (stateDataNew.enabled && !stateDataOld.enabled) {
             result.enabled.push({
               state,
               district: '',
+              time: new Date(stateDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
             });
-          } else if (!statesNew[state].enabled && statesOld[state].enabled) {
+          } else if (!stateDataNew.enabled && stateDataOld.enabled) {
             result.disabled.push({
               state,
               district: '',
+              time: new Date(stateDataNew.disabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
             });
           }
-          const districts = Object.keys(statesNew[state].districts);
-          for (const district of districts) {
-            if (statesNew[state].districts[district].enabled) {
+
+          for (const district in stateDataNew.districts) {
+            const districtDataNew = stateDataNew.districts[district];
+            const districtDataOld = (stateDataOld.districts || {})[district] || {};
+
+            if (districtDataNew.enabled) {
               alertsDisabled = false;
             }
-            if (
-              statesNew[state].districts[district].enabled
-              && !statesOld[state].districts[district].enabled
-            ) {
+
+            if (districtDataNew.enabled && !districtDataOld.enabled) {
               result.enabled.push({
                 state,
                 district,
+                time: new Date(districtDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
               });
-            } else if (
-              !statesNew[state].districts[district].enabled
-              && statesOld[state].districts[district].enabled
-            ) {
+            } else if (!districtDataNew.enabled && districtDataOld.enabled) {
               result.disabled.push({
                 state,
                 district,
+                time: new Date(districtDataNew.disabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
               });
             }
           }
         }
       } else {
         for (const state of states) {
-          if (statesNew[state].enabled) {
+          const stateDataNew = statesNew[state];
+
+          if (stateDataNew.enabled) {
             alertsDisabled = false;
             result.enabled.push({
               state,
               district: '',
+              time: new Date(stateDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
             });
           }
-          const districts = Object.keys(statesNew[state].districts);
-          for (const district of districts) {
-            if (statesNew[state].districts[district].enabled) {
+
+          for (const district in stateDataNew.districts) {
+            const districtDataNew = stateDataNew.districts[district];
+
+            if (districtDataNew.enabled) {
               alertsDisabled = false;
               result.enabled.push({
                 state,
                 district,
+                time: new Date(districtDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
               });
             }
           }
@@ -93,13 +105,13 @@ module.exports = {
       let reply = '';
       if (result.enabled.length) {
         reply += '🚨 *Повітряна тривога оголошена!* 🚨\n\n';
-        reply += '🔴 _Оголошена повітряна тривога в наступних регіонах:_\n';
+        reply += '🔴 _Тривога в наступних регіонах:_\n';
         for (const alert of result.enabled) {
           reply += `🔸 *${alert.state}*`;
           if (alert.district) {
             reply += `, ${alert.district}`;
           }
-          reply += '\n';
+          reply += `\n🕒 Час оголошення: ${alert.time}\n`;
         }
         reply += '\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
       }
@@ -112,7 +124,7 @@ module.exports = {
           if (alert.district) {
             reply += `, ${alert.district}`;
           }
-          reply += '\n';
+          reply += `\n🕒 Час відбою: ${alert.time}\n`;
         }
         reply += '\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
       }

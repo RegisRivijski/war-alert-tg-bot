@@ -10,5 +10,6 @@ module.exports = (bot) => {
     .command('help', usersMiddleware.canReply, standardController.help)
 
     // War alerts
-    .command('waralertcheckall', usersMiddleware.canReply, warAlertController.warAlertCheckAll);
+    .command('waralertcheckall', usersMiddleware.canReply, warAlertController.warAlertCheckAll)
+    .command('waralertchecksafe', usersMiddleware.canReply, warAlertController.warAlertCheckSafe);
 };

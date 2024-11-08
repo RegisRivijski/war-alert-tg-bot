@@ -12,24 +12,73 @@ module.exports = {
     let reply = '';
     if (alerts.length) {
       reply += '🚨 *УВАГА! Повітряна тривога!* 🚨\n\n';
-      reply += '🔴 На даний момент повітряна тривога оголошена в наступних регіонах:\n\n';
+      reply += '🔴 _На даний момент повітряна тривога оголошена в наступних регіонах:_\n\n';
+
       for (const alert of alerts) {
         reply += `🔸 *${alert.state}*`;
+
         if (alert.district) {
-          reply += `, ${alert.district}.\n`;
-        } else {
-          reply += '.\n';
+          reply += `, ${alert.district}`;
         }
+
+        if (alert.enabled_at) {
+          const formattedTime = new Date(alert.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' });
+          reply += `\n🕒 Час оголошення: ${formattedTime}`;
+        }
+
+        reply += '\n';
       }
+
       reply += '\n⚠️ Будьте обережні та залишайтеся в безпечному місці!\n';
     } else {
-      reply = '🟢 На даний момент повітряна тривога відсутня по всіх областях України. Спокійного дня!\n';
+      reply = '🟢 На даний момент повітряна тривога відсутня по всіх областях України. Спокійного дня! 🕊️\n';
     }
 
     reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
+
     await ctx.replyWithMarkdown(reply)
       .catch((e) => {
         console.error('warAlertController warAlertCheckAll ctx reply error:', e.message);
+      });
+
+    await next();
+  },
+
+  async warAlertCheckSafe(ctx, next) {
+    const allRegions = await warAlertHelper.getAllRegionsStatus()
+      .catch((e) => {
+        console.error('warAlertController warAlertCheckSafe warAlertHelper getAllRegionsStatus error:', e.message);
+        throw e;
+      });
+
+    let reply = '';
+    const safeRegions = allRegions.filter(region => !region.enabled);
+
+    if (safeRegions.length) {
+      reply += '🟢 *Регіони без повітряної тривоги:* 🟢\n\n';
+      for (const region of safeRegions) {
+        reply += `✅ *${region.state}*`;
+
+        if (region.district) {
+          reply += `, ${region.district}`;
+        }
+
+        if (region.disabled_at) {
+          const formattedTime = new Date(region.disabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' });
+          reply += `\n🕒 Час відбою: ${formattedTime}`;
+        }
+
+        reply += '\n';
+      }
+    } else {
+      reply = '🔴 На даний момент повітряна тривога оголошена у всіх регіонах України.\n';
+    }
+
+    reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
+
+    await ctx.replyWithMarkdown(reply)
+      .catch((e) => {
+        console.error('warAlertController warAlertCheckSafe ctx reply error:', e.message);
       });
 
     await next();
