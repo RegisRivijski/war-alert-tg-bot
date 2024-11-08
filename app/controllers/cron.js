@@ -92,31 +92,41 @@ module.exports = {
 
       let reply = '';
       if (result.enabled.length) {
-        reply += '🛑Увага! Оголошено повітряну тривогу!🛑\n';
+        reply += '🚨 *Повітряна тривога оголошена!* 🚨\n\n';
+        reply += '🔴 _Оголошена повітряна тривога в наступних регіонах:_\n';
         for (const alert of result.enabled) {
-          reply += `️ - ${alert.state}`;
-          reply += '.\n';
+          reply += `🔸 *${alert.state}*`;
+          if (alert.district) {
+            reply += `, ${alert.district}`;
+          }
+          reply += '\n';
         }
+        reply += '\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
       }
       if (result.disabled.length) {
         if (reply.length) reply += '\n';
-        reply += '🟩Відбій повітряної тривоги.🟩\n';
+        reply += '🟢 *Відбій повітряної тривоги!* 🟢\n\n';
+        reply += '✅ _Тривога скасована в наступних регіонах:_\n';
         for (const alert of result.disabled) {
-          reply += ` - ${alert.state}`;
-          reply += '.\n';
+          reply += `🔹 *${alert.state}*`;
+          if (alert.district) {
+            reply += `, ${alert.district}`;
+          }
+          reply += '\n';
         }
+        reply += '\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
       }
 
       if (states.length) {
         if (!alertsDisabledOld && alertsDisabled) {
-          reply = 'Повітряна тривога відсутня по всіх областях України.\n';
+          reply = '🟩 *На даний момент повітряна тривога відсутня по всій території України.* Спокійного дня! 🕊️\n';
         }
         statesCache.set('states', statesNew);
         statesCache.set('alertsDisabled', alertsDisabled);
       }
 
       if (reply) {
-        await bot.telegram.sendMessage(CHANNEL_ID, reply)
+        await bot.telegram.sendMessage(CHANNEL_ID, reply, { parse_mode: 'Markdown' })
           .catch((e) => {
             console.error('cron warAlertNotification bot sendMessage:', e.message);
           });
