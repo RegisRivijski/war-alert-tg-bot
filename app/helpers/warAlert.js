@@ -40,7 +40,7 @@ module.exports = {
     return result;
   },
 
-  // Метод для получения неактивных тревог
+  // Метод для получения неактивных тревог с учетом состояния всех районов области
   async getInactiveAlertsVC() {
     const result = [];
     const statesNew = await warAlertManager.getActiveAlertsVC()
@@ -53,27 +53,36 @@ module.exports = {
     const states = Object.keys(statesNew);
     for (const state of states) {
       const stateData = statesNew[state];
+      const districts = Object.keys(stateData.districts);
 
-      // Проверка и добавление регионов без активной тревоги
-      if (!stateData.enabled) {
+      // Флаг для отслеживания, есть ли активные тревоги в районах области
+      let hasActiveDistrictAlerts = false;
+      const inactiveDistricts = [];
+
+      // Проверяем каждый район на наличие активной тревоги
+      for (const district of districts) {
+        const districtData = stateData.districts[district];
+        if (!districtData.enabled) {
+          inactiveDistricts.push({
+            state,
+            district,
+            disabled_at: districtData.disabled_at,
+          });
+        } else {
+          hasActiveDistrictAlerts = true;
+        }
+      }
+
+      // Если во всех районах тревога отключена, добавляем только область
+      if (!hasActiveDistrictAlerts && !stateData.enabled) {
         result.push({
           state,
           district: '',
           disabled_at: stateData.disabled_at,
         });
-      }
-
-      // Проверка и добавление районов без активной тревоги
-      const districts = Object.keys(stateData.districts);
-      for (const district of districts) {
-        const districtData = stateData.districts[district];
-        if (!districtData.enabled) {
-          result.push({
-            state,
-            district,
-            disabled_at: districtData.disabled_at,
-          });
-        }
+      } else {
+        // Если хотя бы в одном районе тревога включена, добавляем каждый неактивный район отдельно
+        result.push(...inactiveDistricts);
       }
     }
     return result;
