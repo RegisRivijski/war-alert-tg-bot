@@ -6,6 +6,7 @@ const {
 } = require('../constants/index');
 
 const { formatTime } = require('../helpers/timeHelper');
+const telegramHelper = require('../helpers/telegram');
 const warAlertManager = require('../managers/warAlert');
 
 const statesCache = new NodeCache();
@@ -142,7 +143,7 @@ module.exports = {
       }
 
       if (reply) {
-        await bot.telegram.sendMessage(CHANNEL_ID, reply, { parse_mode: 'Markdown' })
+        await telegramHelper.sendReplyInChunks(bot, CHANNEL_ID, reply)
           .catch((e) => {
             console.error('cron warAlertNotification bot sendMessage:', e.message);
           });

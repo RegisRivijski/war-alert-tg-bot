@@ -1,5 +1,6 @@
 const { formatTime } = require('../helpers/timeHelper');
 const warAlertHelper = require('../helpers/warAlert');
+const telegramHelper = require('../helpers/telegram');
 
 module.exports = {
 
@@ -37,7 +38,7 @@ module.exports = {
 
     reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
 
-    await ctx.replyWithMarkdown(reply)
+    await telegramHelper.sendUserMessageInChunks(ctx, reply)
       .catch((e) => {
         console.error('warAlertController warAlertCheckAll ctx reply error:', e.message);
       });
@@ -77,7 +78,7 @@ module.exports = {
 
     reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
 
-    await ctx.replyWithMarkdown(reply)
+    await telegramHelper.sendUserMessageInChunks(ctx, reply)
       .catch((e) => {
         console.error('warAlertController warAlertCheckSafe ctx reply error:', e.message);
       });
