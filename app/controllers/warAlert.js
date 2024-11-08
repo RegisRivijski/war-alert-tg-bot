@@ -1,3 +1,4 @@
+const { formatTime } = require('../helpers/timeHelper');
 const warAlertHelper = require('../helpers/warAlert');
 
 module.exports = {
@@ -22,8 +23,8 @@ module.exports = {
         }
 
         if (alert.enabled_at) {
-          const formattedTime = new Date(alert.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' });
-          reply += `\n🕒 Час оголошення: ${formattedTime}`;
+          const formattedTime = formatTime(alert.enabled_at);
+          reply += ` _(оголошено: ${formattedTime})_`;
         }
 
         reply += '\n';
@@ -45,14 +46,14 @@ module.exports = {
   },
 
   async warAlertCheckSafe(ctx, next) {
-    const allRegions = await warAlertHelper.getAllRegionsStatus()
+    const allRegions = await warAlertHelper.getActiveAlertsVC()
       .catch((e) => {
         console.error('warAlertController warAlertCheckSafe warAlertHelper getAllRegionsStatus error:', e.message);
         throw e;
       });
 
     let reply = '';
-    const safeRegions = allRegions.filter(region => !region.enabled);
+    const safeRegions = allRegions.filter((region) => !region.enabled);
 
     if (safeRegions.length) {
       reply += '🟢 *Регіони без повітряної тривоги:* 🟢\n\n';
@@ -64,8 +65,8 @@ module.exports = {
         }
 
         if (region.disabled_at) {
-          const formattedTime = new Date(region.disabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' });
-          reply += `\n🕒 Час відбою: ${formattedTime}`;
+          const formattedTime = formatTime(region.disabled_at);
+          reply += ` _(відбій: ${formattedTime})_`;
         }
 
         reply += '\n';

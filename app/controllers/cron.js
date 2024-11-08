@@ -1,10 +1,12 @@
 const cron = require('node-cron');
 const NodeCache = require('node-cache');
-const warAlertManager = require('../managers/warAlert');
 
 const {
   CHANNEL_ID,
 } = require('../constants/index');
+
+const { formatTime } = require('../helpers/timeHelper');
+const warAlertManager = require('../managers/warAlert');
 
 const statesCache = new NodeCache();
 
@@ -41,16 +43,17 @@ module.exports = {
             result.enabled.push({
               state,
               district: '',
-              time: new Date(stateDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
+              time: formatTime(stateDataNew.enabled_at),
             });
           } else if (!stateDataNew.enabled && stateDataOld.enabled) {
             result.disabled.push({
               state,
               district: '',
-              time: new Date(stateDataNew.disabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
+              time: formatTime(stateDataNew.disabled_at),
             });
           }
 
+          // eslint-disable-next-line guard-for-in
           for (const district in stateDataNew.districts) {
             const districtDataNew = stateDataNew.districts[district];
             const districtDataOld = (stateDataOld.districts || {})[district] || {};
@@ -63,13 +66,13 @@ module.exports = {
               result.enabled.push({
                 state,
                 district,
-                time: new Date(districtDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
+                time: formatTime(districtDataNew.enabled_at),
               });
             } else if (!districtDataNew.enabled && districtDataOld.enabled) {
               result.disabled.push({
                 state,
                 district,
-                time: new Date(districtDataNew.disabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
+                time: formatTime(districtDataNew.disabled_at),
               });
             }
           }
@@ -83,10 +86,11 @@ module.exports = {
             result.enabled.push({
               state,
               district: '',
-              time: new Date(stateDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
+              time: formatTime(stateDataNew.enabled_at),
             });
           }
 
+          // eslint-disable-next-line guard-for-in
           for (const district in stateDataNew.districts) {
             const districtDataNew = stateDataNew.districts[district];
 
@@ -95,7 +99,7 @@ module.exports = {
               result.enabled.push({
                 state,
                 district,
-                time: new Date(districtDataNew.enabled_at).toLocaleString('uk-UA', { timeZone: 'Europe/Kiev' }),
+                time: formatTime(districtDataNew.enabled_at),
               });
             }
           }
@@ -111,7 +115,7 @@ module.exports = {
           if (alert.district) {
             reply += `, ${alert.district}`;
           }
-          reply += `\n🕒 Час оголошення: ${alert.time}\n`;
+          reply += ` _(оголошено: ${alert.time})_\n`;
         }
         reply += '\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
       }
@@ -124,7 +128,7 @@ module.exports = {
           if (alert.district) {
             reply += `, ${alert.district}`;
           }
-          reply += `\n🕒 Час відбою: ${alert.time}\n`;
+          reply += ` _(відбій: ${alert.time})_\n`;
         }
         reply += '\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
       }
