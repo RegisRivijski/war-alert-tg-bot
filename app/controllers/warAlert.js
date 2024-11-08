@@ -46,7 +46,7 @@ module.exports = {
   },
 
   async warAlertCheckSafe(ctx, next) {
-    const allRegions = await warAlertHelper.getActiveAlertsVC()
+    const allRegions = await warAlertHelper.getInactiveAlertsVC()
       .catch((e) => {
         console.error('warAlertController warAlertCheckSafe warAlertHelper getAllRegionsStatus error:', e.message);
         throw e;
