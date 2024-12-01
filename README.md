@@ -15,7 +15,7 @@ This Telegram bot notifies users about active air raid alerts in Ukraine via a d
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/your-repo/war-alert-bot.git
+git clone https://github.com/RegisRivijski/war-alert-tg-bot.git
 cd war-alert-bot
 ```
 
