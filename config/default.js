@@ -15,6 +15,11 @@ module.exports = {
       limit: 1,
     },
   },
+  analytics: {
+    Amplitude: {
+      key: process.env.AMPLITUDE_WAR_ALERT_TG_API_KEY,
+    },
+  },
   db: {
     mongodb: {
       url: process.env.MONGODB_WAR_ALERT_TG_BOT_URL,

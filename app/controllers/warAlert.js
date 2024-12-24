@@ -1,6 +1,10 @@
+const analyticEventTypes = require('../constants/analyticEventTypes');
+
 const { formatTime } = require('../helpers/timeHelper');
 const warAlertHelper = require('../helpers/warAlert');
 const telegramHelper = require('../helpers/telegram');
+
+const analyticsManager = require('../managers/analyticsManager');
 
 module.exports = {
 
@@ -43,6 +47,14 @@ module.exports = {
         console.error('warAlertController warAlertCheckAll ctx reply error:', e.message);
       });
 
+    analyticsManager.logEvent({
+      eventType: analyticEventTypes.CHECK_ACTIVE,
+      userId: ctx.update?.message?.from?.id,
+    })
+      .catch((e) => {
+        console.error('warAlertController warAlertCheckAll analyticsManager logEvent:', e.message);
+      });
+
     await next();
   },
 
@@ -81,6 +93,14 @@ module.exports = {
     await telegramHelper.sendUserMessageInChunks(ctx, reply)
       .catch((e) => {
         console.error('warAlertController warAlertCheckSafe ctx reply error:', e.message);
+      });
+
+    analyticsManager.logEvent({
+      eventType: analyticEventTypes.CHECK_DISABLED,
+      userId: ctx.update?.message?.from?.id,
+    })
+      .catch((e) => {
+        console.error('warAlertController warAlertCheckAll analyticsManager logEvent:', e.message);
       });
 
     await next();

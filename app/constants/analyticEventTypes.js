@@ -1,0 +1,6 @@
+module.exports = {
+  START: 'START',
+  HELP: 'HELP',
+  CHECK_ACTIVE: 'CHECK_ACTIVE',
+  CHECK_DISABLED: 'CHECK_DISABLED',
+};

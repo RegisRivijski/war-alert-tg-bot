@@ -1,3 +1,7 @@
+const analyticEventTypes = require('../constants/analyticEventTypes');
+
+const analyticsManager = require('../managers/analyticsManager');
+
 module.exports = {
 
   async start(ctx, next) {
@@ -15,6 +19,14 @@ module.exports = {
         throw e;
       });
 
+    analyticsManager.logEvent({
+      eventType: analyticEventTypes.START,
+      userId: ctx.update?.message?.from?.id,
+    })
+      .catch((e) => {
+        console.error('standardController start analyticsManager logEvent:', e.message);
+      });
+
     await next();
   },
 
@@ -30,6 +42,15 @@ module.exports = {
         console.error('help reply:', e.message);
         throw e;
       });
+
+    analyticsManager.logEvent({
+      eventType: analyticEventTypes.HELP,
+      userId: ctx.update?.message?.from?.id,
+    })
+      .catch((e) => {
+        console.error('standardController start analyticsManager logEvent:', e.message);
+      });
+
     await next();
   },
 };
