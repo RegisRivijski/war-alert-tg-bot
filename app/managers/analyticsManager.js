@@ -1,4 +1,4 @@
-const AmplitudeSingleton = '../classes/AmplitudeSingleton';
+const AmplitudeSingleton = require('../classes/AmplitudeSingleton');
 
 module.exports = {
   logEvent({
