@@ -1,11 +1,9 @@
 const config = require('config');
 
-const { init, OfflineRetryHandler } = '@amplitude/node';
+const Amplitude = '@amplitude/node';
 
 const apiKey = config.analytics.Amplitude.key;
 
-const client = init(apiKey, {
-  retryClass: new OfflineRetryHandler(apiKey),
-});
+const client = Amplitude.init(apiKey);
 
 module.exports = client;
