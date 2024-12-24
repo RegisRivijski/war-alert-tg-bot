@@ -10,7 +10,6 @@ module.exports = {
       event_type: eventType,
       user_id: String(userId),
       event_properties: eventProperties,
-    })
-      .then((response) => console.log(response, userId));
+    });
   },
 };
