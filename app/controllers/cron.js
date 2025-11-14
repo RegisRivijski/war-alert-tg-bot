@@ -7,6 +7,7 @@ const {
 
 const { formatTime } = require('../helpers/timeHelper');
 const telegramHelper = require('../helpers/telegram');
+const warAlertHelper = require('../helpers/warAlert');
 const warAlertManager = require('../managers/warAlert');
 
 const statesCache = new NodeCache();
@@ -107,39 +108,23 @@ module.exports = {
         }
       }
 
-      function groupByState(alerts) {
-        const map = {};
-        for (const alert of alerts) {
-          if (!map[alert.state]) {
-            map[alert.state] = { stateTime: null, districts: [] };
-          }
-
-          if (!alert.district) {
-            map[alert.state].stateTime = alert.time;
-          } else {
-            map[alert.state].districts.push({ district: alert.district, time: alert.time });
-          }
-        }
-        return map;
-      }
-
       let reply = '';
       if (result.enabled.length) {
         reply += '🚨 *Повітряна тривога оголошена!* 🚨\n\n';
         reply += '🔴 _Тривога в наступних регіонах:_\n';
 
-        const grouped = groupByState(result.enabled);
+        const grouped = warAlertHelper.groupByState(result.enabled);
 
         for (const state of Object.keys(grouped)) {
           const entry = grouped[state];
-          reply += `\n🔸 *${state}*`;
+          reply += `\n🔶 *${state}*`;
 
           if (entry.stateTime) {
-            reply += `\n — _оголошено: ${entry.stateTime}_\n`;
+            reply += `\n — _оголошено: ${entry.stateTime}_`;
           }
 
           for (const d of entry.districts) {
-            reply += `\n   🔘 ${d.district}\n     — _оголошено: ${d.time}_`;
+            reply += `\n   🔸 ${d.district}\n     — _оголошено: ${d.time}_`;
           }
         }
 
@@ -151,18 +136,18 @@ module.exports = {
         reply += '🟢 *Відбій повітряної тривоги!* 🟢\n\n';
         reply += '✅ _Тривога скасована в наступних регіонах:_\n';
 
-        const grouped = groupByState(result.disabled);
+        const grouped = warAlertHelper.groupByState(result.disabled);
 
         for (const state of Object.keys(grouped)) {
           const entry = grouped[state];
-          reply += `\n🔹 *${state}*`;
+          reply += `\n🔷 *${state}*`;
 
           if (entry.stateTime) {
-            reply += `\n — _відбій: ${entry.stateTime}_\n`;
+            reply += `\n — _відбій: ${entry.stateTime}_`;
           }
 
           for (const d of entry.districts) {
-            reply += `\n   🔘 ${d.district}\n     — _відбій: ${d.time}_`;
+            reply += `\n   🔹 ${d.district}\n     — _відбій: ${d.time}_`;
           }
         }
 

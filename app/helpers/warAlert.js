@@ -1,7 +1,6 @@
 const warAlertManager = require('../managers/warAlert');
 
 module.exports = {
-  // Метод для получения активных тревог
   async getActiveAlertsVC() {
     const result = [];
     const statesNew = await warAlertManager.getActiveAlertsVC()
@@ -15,7 +14,6 @@ module.exports = {
     for (const state of states) {
       const stateData = statesNew[state];
 
-      // Проверка и добавление активных тревог для регионов
       if (stateData.enabled) {
         result.push({
           state,
@@ -24,7 +22,6 @@ module.exports = {
         });
       }
 
-      // Проверка и добавление активных тревог для районов
       const districts = Object.keys(stateData.districts);
       for (const district of districts) {
         const districtData = stateData.districts[district];
@@ -40,7 +37,6 @@ module.exports = {
     return result;
   },
 
-  // Метод для получения неактивных тревог с учетом состояния всех районов области
   async getInactiveAlertsVC() {
     const result = [];
     const statesNew = await warAlertManager.getActiveAlertsVC()
@@ -55,11 +51,9 @@ module.exports = {
       const stateData = statesNew[state];
       const districts = Object.keys(stateData.districts);
 
-      // Флаг для отслеживания, есть ли активные тревоги в районах области
       let hasActiveDistrictAlerts = false;
       const inactiveDistricts = [];
 
-      // Проверяем каждый район на наличие активной тревоги
       for (const district of districts) {
         const districtData = stateData.districts[district];
         if (!districtData.enabled) {
@@ -73,7 +67,6 @@ module.exports = {
         }
       }
 
-      // Если во всех районах тревога отключена, добавляем только область
       if (!hasActiveDistrictAlerts && !stateData.enabled) {
         result.push({
           state,
@@ -81,10 +74,25 @@ module.exports = {
           disabled_at: stateData.disabled_at,
         });
       } else {
-        // Если хотя бы в одном районе тревога включена, добавляем каждый неактивный район отдельно
         result.push(...inactiveDistricts);
       }
     }
     return result;
+  },
+
+  groupByState(alerts) {
+    const map = {};
+    for (const alert of alerts) {
+      if (!map[alert.state]) {
+        map[alert.state] = { stateTime: null, districts: [] };
+      }
+
+      if (!alert.district) {
+        map[alert.state].stateTime = alert.time;
+      } else {
+        map[alert.state].districts.push({ district: alert.district, time: alert.time });
+      }
+    }
+    return map;
   },
 };
