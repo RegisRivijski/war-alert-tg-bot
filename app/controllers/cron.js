@@ -107,30 +107,65 @@ module.exports = {
         }
       }
 
+      function groupByState(alerts) {
+        const map = {};
+        for (const alert of alerts) {
+          if (!map[alert.state]) {
+            map[alert.state] = { stateTime: null, districts: [] };
+          }
+
+          if (!alert.district) {
+            map[alert.state].stateTime = alert.time;
+          } else {
+            map[alert.state].districts.push({ district: alert.district, time: alert.time });
+          }
+        }
+        return map;
+      }
+
       let reply = '';
       if (result.enabled.length) {
         reply += '🚨 *Повітряна тривога оголошена!* 🚨\n\n';
         reply += '🔴 _Тривога в наступних регіонах:_\n';
-        for (const alert of result.enabled) {
-          reply += `🔸 *${alert.state}*`;
-          if (alert.district) {
-            reply += `, ${alert.district}`;
+
+        const grouped = groupByState(result.enabled);
+
+        for (const state of Object.keys(grouped)) {
+          const entry = grouped[state];
+          reply += `\n🔸 *${state}*`;
+
+          if (entry.stateTime) {
+            reply += `\n — _оголошено: ${entry.stateTime}_\n`;
           }
-          reply += `\n — _оголошено: ${alert.time}_\n`;
+
+          for (const d of entry.districts) {
+            reply += `   • ${d.district}\n     — _оголошено: ${d.time}_\n`;
+          }
         }
+
         reply += '\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
       }
+
       if (result.disabled.length) {
         if (reply.length) reply += '\n';
         reply += '🟢 *Відбій повітряної тривоги!* 🟢\n\n';
         reply += '✅ _Тривога скасована в наступних регіонах:_\n';
-        for (const alert of result.disabled) {
-          reply += `🔹 *${alert.state}*`;
-          if (alert.district) {
-            reply += `, ${alert.district}`;
+
+        const grouped = groupByState(result.disabled);
+
+        for (const state of Object.keys(grouped)) {
+          const entry = grouped[state];
+          reply += `\n🔹 *${state}*`;
+
+          if (entry.stateTime) {
+            reply += `\n — _відбій: ${entry.stateTime}_\n`;
           }
-          reply += `\n — _відбій: ${alert.time}_\n`;
+
+          for (const d of entry.districts) {
+            reply += `   • ${d.district}\n     — _відбій: ${d.time}_\n`;
+          }
         }
+
         reply += '\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
       }
 
