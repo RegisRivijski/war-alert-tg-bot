@@ -116,7 +116,10 @@ module.exports = {
       }
 
       for (const d of entry.districts) {
-        reply += `\n   🔹 ${d.district}\n     — _відбій: ${d.time}_`;
+        reply += `\n   🔹 ${d.district}`;
+        if (d.time) {
+          reply += `\n     — _відбій: ${d.time}_`;
+        }
       }
     }
 
@@ -143,7 +146,10 @@ module.exports = {
       }
 
       for (const d of entry.districts) {
-        reply += `\n   🔸 ${d.district}\n     — _оголошено: ${d.time}_`;
+        reply += `\n   🔸 ${d.district}`;
+        if (d.time) {
+          reply += `\n     — _оголошено: ${d.time}_`;
+        }
       }
     }
 
