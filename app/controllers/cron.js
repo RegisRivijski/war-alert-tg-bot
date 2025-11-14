@@ -117,7 +117,7 @@ module.exports = {
 
         for (const state of Object.keys(grouped)) {
           const entry = grouped[state];
-          reply += `\n🔶 *${state}*`;
+          reply += `\n🟥 *${state}*`;
 
           if (entry.stateTime) {
             reply += `\n — _оголошено: ${entry.stateTime}_`;
@@ -128,7 +128,7 @@ module.exports = {
           }
         }
 
-        reply += '\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
+        reply += '\n\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
       }
 
       if (result.disabled.length) {
@@ -140,7 +140,7 @@ module.exports = {
 
         for (const state of Object.keys(grouped)) {
           const entry = grouped[state];
-          reply += `\n🔷 *${state}*`;
+          reply += `\n🟩 *${state}*`;
 
           if (entry.stateTime) {
             reply += `\n — _відбій: ${entry.stateTime}_`;
@@ -151,7 +151,7 @@ module.exports = {
           }
         }
 
-        reply += '\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
+        reply += '\n\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
       }
 
       if (states.length) {
