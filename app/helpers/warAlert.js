@@ -18,7 +18,7 @@ module.exports = {
         result.push({
           state,
           district: '',
-          stateTime: stateData.stateTime,
+          time: stateData.time,
         });
       }
 
@@ -71,7 +71,7 @@ module.exports = {
         result.push({
           state,
           district: '',
-          stateTime: stateData.time,
+          time: stateData.time,
         });
       } else {
         result.push(...inactiveDistricts);
