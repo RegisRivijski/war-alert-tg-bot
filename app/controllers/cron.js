@@ -110,8 +110,7 @@ module.exports = {
 
       let reply = '';
       if (result.enabled.length) {
-        reply += '🚨 *Повітряна тривога оголошена!* 🚨\n\n';
-        reply += '🔴 _Тривога в наступних регіонах:_';
+        reply += '🚨 *Повітряна тривога оголошена!* 🚨\n';
 
         const grouped = warAlertHelper.groupByState(result.enabled);
 
@@ -133,8 +132,7 @@ module.exports = {
 
       if (result.disabled.length) {
         if (reply.length) reply += '\n';
-        reply += '🟢 *Відбій повітряної тривоги!* 🟢\n\n';
-        reply += '✅ _Тривога скасована в наступних регіонах:_';
+        reply += '🟢 *Відбій повітряної тривоги!* 🟢\n';
 
         const grouped = warAlertHelper.groupByState(result.disabled);
 
