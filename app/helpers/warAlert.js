@@ -1,3 +1,5 @@
+const { formatTime } = require('./timeHelper');
+
 const warAlertManager = require('../managers/warAlert');
 
 module.exports = {
@@ -18,7 +20,7 @@ module.exports = {
         result.push({
           state,
           district: '',
-          time: stateData.enabled_at,
+          time: formatTime(stateData.enabled_at),
         });
       }
 
@@ -29,7 +31,7 @@ module.exports = {
           result.push({
             state,
             district,
-            time: districtData.enabled_at,
+            time: formatTime(districtData.enabled_at),
           });
         }
       }
@@ -60,7 +62,7 @@ module.exports = {
           inactiveDistricts.push({
             state,
             district,
-            time: districtData.disabled_at,
+            time: formatTime(districtData.disabled_at),
           });
         } else {
           hasActiveDistrictAlerts = true;
@@ -71,7 +73,7 @@ module.exports = {
         result.push({
           state,
           district: '',
-          time: stateData.disabled_at,
+          time: formatTime(stateData.disabled_at),
         });
       } else {
         result.push(...inactiveDistricts);
