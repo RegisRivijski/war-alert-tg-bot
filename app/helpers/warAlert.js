@@ -18,7 +18,7 @@ module.exports = {
         result.push({
           state,
           district: '',
-          enabled_at: stateData.enabled_at,
+          stateTime: stateData.stateTime,
         });
       }
 
@@ -29,7 +29,7 @@ module.exports = {
           result.push({
             state,
             district,
-            enabled_at: districtData.enabled_at,
+            time: districtData.time,
           });
         }
       }
@@ -60,7 +60,7 @@ module.exports = {
           inactiveDistricts.push({
             state,
             district,
-            disabled_at: districtData.disabled_at,
+            time: districtData.time,
           });
         } else {
           hasActiveDistrictAlerts = true;
@@ -71,7 +71,7 @@ module.exports = {
         result.push({
           state,
           district: '',
-          disabled_at: stateData.disabled_at,
+          stateTime: stateData.time,
         });
       } else {
         result.push(...inactiveDistricts);
