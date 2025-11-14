@@ -16,7 +16,6 @@ module.exports = {
   warAlertNotification(bot) {
     cron.schedule('* * * * *', async () => {
       const statesOld = statesCache.get('states');
-      const alertsDisabledOld = statesCache.get('alertsDisabled');
 
       const statesNew = await warAlertManager.getActiveAlertsVC()
         .then((data) => data.states)
@@ -31,15 +30,10 @@ module.exports = {
         disabled: [],
       };
 
-      let alertsDisabled = true;
       if (statesOld) {
         for (const state of states) {
           const stateDataNew = statesNew[state];
           const stateDataOld = statesOld[state] || {};
-
-          if (stateDataNew.enabled) {
-            alertsDisabled = false;
-          }
 
           if (stateDataNew.enabled && !stateDataOld.enabled) {
             result.enabled.push({
@@ -59,10 +53,6 @@ module.exports = {
           for (const district in stateDataNew.districts) {
             const districtDataNew = stateDataNew.districts[district];
             const districtDataOld = (stateDataOld.districts || {})[district] || {};
-
-            if (districtDataNew.enabled) {
-              alertsDisabled = false;
-            }
 
             if (districtDataNew.enabled && !districtDataOld.enabled) {
               result.enabled.push({
@@ -84,7 +74,6 @@ module.exports = {
           const stateDataNew = statesNew[state];
 
           if (stateDataNew.enabled) {
-            alertsDisabled = false;
             result.enabled.push({
               state,
               district: '',
@@ -97,7 +86,6 @@ module.exports = {
             const districtDataNew = stateDataNew.districts[district];
 
             if (districtDataNew.enabled) {
-              alertsDisabled = false;
               result.enabled.push({
                 state,
                 district,
@@ -110,54 +98,16 @@ module.exports = {
 
       let reply = '';
       if (result.enabled.length) {
-        reply += '🚨 *Повітряна тривога оголошена!* 🚨\n';
-
-        const grouped = warAlertHelper.groupByState(result.enabled);
-
-        for (const state of Object.keys(grouped)) {
-          const entry = grouped[state];
-          reply += `\n🟥 *${state}*`;
-
-          if (entry.stateTime) {
-            reply += `\n — _оголошено: ${entry.stateTime}_`;
-          }
-
-          for (const d of entry.districts) {
-            reply += `\n   🔸 ${d.district}\n     — _оголошено: ${d.time}_`;
-          }
-        }
-
-        reply += '\n\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
+        reply += warAlertHelper.buildAlertRegionsReply(result.enabled);
       }
 
       if (result.disabled.length) {
         if (reply.length) reply += '\n';
-        reply += '\n🟢 *Відбій повітряної тривоги!* 🟢\n';
-
-        const grouped = warAlertHelper.groupByState(result.disabled);
-
-        for (const state of Object.keys(grouped)) {
-          const entry = grouped[state];
-          reply += `\n🟩 *${state}*`;
-
-          if (entry.stateTime) {
-            reply += `\n — _відбій: ${entry.stateTime}_`;
-          }
-
-          for (const d of entry.districts) {
-            reply += `\n   🔹 ${d.district}\n     — _відбій: ${d.time}_`;
-          }
-        }
-
-        reply += '\n\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
+        reply += warAlertHelper.buildSafeRegionsReply(result.disabled);
       }
 
       if (states.length) {
-        if (!alertsDisabledOld && alertsDisabled) {
-          reply = '🟩 *На даний момент повітряна тривога відсутня по всій території України.* Спокійного дня! 🕊️\n';
-        }
         statesCache.set('states', statesNew);
-        statesCache.set('alertsDisabled', alertsDisabled);
       }
 
       if (reply) {

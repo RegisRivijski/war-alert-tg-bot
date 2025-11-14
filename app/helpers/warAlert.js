@@ -95,4 +95,58 @@ module.exports = {
     }
     return map;
   },
+
+  buildSafeRegionsReply(safeRegions) {
+    if (!safeRegions.length) {
+      return '🔴 На даний момент повітряна тривога оголошена у всіх регіонах України.\n';
+    }
+
+    let reply = '\n🟢 *Відбій повітряної тривоги!* 🟢\n';
+
+    const grouped = this.groupByState(safeRegions);
+
+    for (const state of Object.keys(grouped)) {
+      const entry = grouped[state];
+      reply += `\n🟩 *${state}*`;
+
+      if (entry.stateTime) {
+        reply += `\n — _відбій: ${entry.stateTime}_`;
+      }
+
+      for (const d of entry.districts) {
+        reply += `\n   🔹 ${d.district}\n     — _відбій: ${d.time}_`;
+      }
+    }
+
+    reply += '\n\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
+
+    return reply;
+  },
+
+  buildAlertRegionsReply(alerts) {
+    if (!alerts.length) {
+      return '🟢 На даний момент повітряна тривога відсутня по всіх областях України. Спокійного дня! 🕊️\n';
+    }
+
+    let reply = '🚨 *Повітряна тривога оголошена!* 🚨\n';
+
+    const grouped = this.groupByState(alerts);
+
+    for (const state of Object.keys(grouped)) {
+      const entry = grouped[state];
+      reply += `\n🟥 *${state}*`;
+
+      if (entry.stateTime) {
+        reply += `\n — _оголошено: ${entry.stateTime}_`;
+      }
+
+      for (const d of entry.districts) {
+        reply += `\n   🔸 ${d.district}\n     — _оголошено: ${d.time}_`;
+      }
+    }
+
+    reply += '\n\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
+
+    return reply;
+  },
 };

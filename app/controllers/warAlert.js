@@ -1,6 +1,5 @@
 const analyticEventTypes = require('../constants/analyticEventTypes');
 
-const { formatTime } = require('../helpers/timeHelper');
 const warAlertHelper = require('../helpers/warAlert');
 const telegramHelper = require('../helpers/telegram');
 
@@ -15,31 +14,7 @@ module.exports = {
         throw e;
       });
 
-    let reply = '';
-    if (alerts.length) {
-      reply += '🚨 *УВАГА! Повітряна тривога!* 🚨\n\n';
-      reply += '🔴 _На даний момент повітряна тривога оголошена в наступних регіонах:_\n\n';
-
-      for (const alert of alerts) {
-        reply += `🔸 *${alert.state}*`;
-
-        if (alert.district) {
-          reply += `, ${alert.district}`;
-        }
-
-        if (alert.enabled_at) {
-          const formattedTime = formatTime(alert.enabled_at);
-          reply += ` _(оголошено: ${formattedTime})_`;
-        }
-
-        reply += '\n';
-      }
-
-      reply += '\n⚠️ Будьте обережні та залишайтеся в безпечному місці!\n';
-    } else {
-      reply = '🟢 На даний момент повітряна тривога відсутня по всіх областях України. Спокійного дня! 🕊️\n';
-    }
-
+    let reply = warAlertHelper.buildAlertRegionsReply(alerts);
     reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
 
     await telegramHelper.sendUserMessageInChunks(ctx, reply)
@@ -65,29 +40,9 @@ module.exports = {
         throw e;
       });
 
-    let reply = '';
     const safeRegions = allRegions.filter((region) => !region.enabled);
 
-    if (safeRegions.length) {
-      reply += '🟢 *Регіони без повітряної тривоги:* 🟢\n\n';
-      for (const region of safeRegions) {
-        reply += `✅ *${region.state}*`;
-
-        if (region.district) {
-          reply += `, ${region.district}`;
-        }
-
-        if (region.disabled_at) {
-          const formattedTime = formatTime(region.disabled_at);
-          reply += ` _(відбій: ${formattedTime})_`;
-        }
-
-        reply += '\n';
-      }
-    } else {
-      reply = '🔴 На даний момент повітряна тривога оголошена у всіх регіонах України.\n';
-    }
-
+    let reply = warAlertHelper.buildSafeRegionsReply(safeRegions);
     reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
 
     await telegramHelper.sendUserMessageInChunks(ctx, reply)
