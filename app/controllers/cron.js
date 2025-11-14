@@ -116,7 +116,7 @@ module.exports = {
           if (alert.district) {
             reply += `, ${alert.district}`;
           }
-          reply += `\n - _(оголошено: ${alert.time})_\n`;
+          reply += `\n — _оголошено: ${alert.time}_\n`;
         }
         reply += '\n⚠️ _Рекомендуємо негайно перейти в укриття!_\n';
       }
@@ -129,7 +129,7 @@ module.exports = {
           if (alert.district) {
             reply += `, ${alert.district}`;
           }
-          reply += `\n - _(відбій: ${alert.time})_\n`;
+          reply += `\n — _відбій: ${alert.time}_\n`;
         }
         reply += '\n👤 _Можете покинути укриття, але залишайтесь обережними._\n';
       }
