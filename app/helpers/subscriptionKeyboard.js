@@ -58,7 +58,7 @@ function buildSubscriptionSummary(regions) {
   }
 
   const list = regions.map((region) => `✅ ${region}`).join('\n');
-  return `*Підписка на області*\n\n`
+  return '*Підписка на області*\n\n'
     + `*Обрані області:*\n${list}\n\n`
     + '_Натисніть на область, щоб увімкнути або вимкнути сповіщення._\n'
     + '_Переглянути поточний статус —_ /waralertmysubscriptions';

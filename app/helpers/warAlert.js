@@ -175,29 +175,28 @@ module.exports = {
 
       if (!stateData) {
         reply += `\n❓ *${region}*\n — _дані недоступні_`;
-        continue;
-      }
-
-      const status = this.getStateAlertStatus(stateData);
-
-      if (status.hasAlert) {
-        hasAnyAlert = true;
-        reply += `\n\n🟥 *${region}* — _тривога_`;
-
-        if (status.stateLevel && status.time) {
-          reply += `\n — _оголошено: ${status.time}_`;
-        }
-
-        for (const district of status.districts) {
-          reply += `\n   🔸 ${district.district}`;
-          if (district.time) {
-            reply += `\n     — _оголошено: ${district.time}_`;
-          }
-        }
       } else {
-        reply += `\n\n🟩 *${region}* — _без тривоги_`;
-        if (status.time) {
-          reply += `\n — _відбій: ${status.time}_`;
+        const status = this.getStateAlertStatus(stateData);
+
+        if (status.hasAlert) {
+          hasAnyAlert = true;
+          reply += `\n\n🟥 *${region}* — _тривога_`;
+
+          if (status.stateLevel && status.time) {
+            reply += `\n — _оголошено: ${status.time}_`;
+          }
+
+          for (const district of status.districts) {
+            reply += `\n   🔸 ${district.district}`;
+            if (district.time) {
+              reply += `\n     — _оголошено: ${district.time}_`;
+            }
+          }
+        } else {
+          reply += `\n\n🟩 *${region}* — _без тривоги_`;
+          if (status.time) {
+            reply += `\n — _відбій: ${status.time}_`;
+          }
         }
       }
     }

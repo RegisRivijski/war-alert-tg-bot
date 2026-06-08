@@ -21,13 +21,13 @@ module.exports = {
 
     const users = await usersHelper.findActiveByRegions(affectedStates);
 
-    for (const user of users) {
+    const notifications = users.reduce((result, user) => {
       const subscribedRegions = new Set(user.regions);
       const enabled = changes.enabled.filter((item) => subscribedRegions.has(item.state));
       const disabled = changes.disabled.filter((item) => subscribedRegions.has(item.state));
 
       if (!enabled.length && !disabled.length) {
-        continue;
+        return result;
       }
 
       let reply = '';
@@ -41,14 +41,18 @@ module.exports = {
         reply += warAlertHelper.buildSafeRegionsReply(disabled);
       }
 
-      await telegramHelper.sendDirectMessageInChunks(bot, user.chatId, reply)
-        .catch(async (error) => {
-          const errorCode = error?.response?.error_code;
-          if (errorCode === 403 || errorCode === 400) {
-            await usersHelper.deactivateUser(user.chatId);
-          }
-          console.error(`notificationHelper notifySubscribedUsers chatId=${user.chatId}:`, error.message);
-        });
-    }
+      result.push({ chatId: user.chatId, reply });
+      return result;
+    }, []);
+
+    await Promise.all(notifications.map(({ chatId, reply }) => telegramHelper
+      .sendDirectMessageInChunks(bot, chatId, reply)
+      .catch(async (error) => {
+        const errorCode = error?.response?.error_code;
+        if (errorCode === 403 || errorCode === 400) {
+          await usersHelper.deactivateUser(chatId);
+        }
+        console.error(`notificationHelper notifySubscribedUsers chatId=${chatId}:`, error.message);
+      })));
   },
 };

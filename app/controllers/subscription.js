@@ -113,7 +113,10 @@ module.exports = {
     }
 
     if (data.startsWith(callbackActions.REGION_TOGGLE_PREFIX)) {
-      const regionIndex = Number.parseInt(data.slice(callbackActions.REGION_TOGGLE_PREFIX.length), 10);
+      const regionIndex = Number.parseInt(
+        data.slice(callbackActions.REGION_TOGGLE_PREFIX.length),
+        10,
+      );
       const region = regionsHelper.getRegionByIndex(regions, regionIndex);
 
       if (!region) {
