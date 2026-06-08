@@ -22,13 +22,17 @@ module.exports = {
   },
   db: {
     mongodb: {
-      url: process.env.MONGODB_WAR_ALERT_TG_BOT_URL,
+      url: process.env.MONGODB_1_HOSTNAME,
       options: {
+        dbName: 'warAlertTgBot',
+        user: process.env.MONGO_INITDB_ROOT_USERNAME,
+        pass: process.env.MONGO_INITDB_ROOT_PASSWORD,
+        authSource: 'admin',
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
         family: 4,
-        retryWrites: true,
+        retryWrites: false,
       },
     },
   },
