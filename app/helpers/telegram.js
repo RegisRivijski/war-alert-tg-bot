@@ -1,20 +1,25 @@
-async function sendReplyInChunks(bot, channelId, reply) {
-  const MAX_MESSAGE_LENGTH = 4096; // Максимальная длина сообщения в Telegram
+function splitMessageIntoChunks(message) {
+  const MAX_MESSAGE_LENGTH = 4096;
   const chunks = [];
 
   let start = 0;
-  while (start < reply.length) {
-    // Найдем позицию, чтобы завершить текущий блок на новой строке, но не превышать лимит
+  while (start < message.length) {
     let end = start + MAX_MESSAGE_LENGTH;
-    if (end < reply.length) {
-      const lastNewLine = reply.lastIndexOf('\n', end);
+    if (end < message.length) {
+      const lastNewLine = message.lastIndexOf('\n', end);
       if (lastNewLine > start) {
-        end = lastNewLine + 1; // Обрезаем на последнем символе новой строки
+        end = lastNewLine + 1;
       }
     }
-    chunks.push(reply.slice(start, end).trim());
+    chunks.push(message.slice(start, end).trim());
     start = end;
   }
+
+  return chunks;
+}
+
+async function sendReplyInChunks(bot, channelId, reply) {
+  const chunks = splitMessageIntoChunks(reply);
 
   for await (const chunk of chunks) {
     await bot.telegram.sendMessage(channelId, chunk, { parse_mode: 'Markdown' })
@@ -25,22 +30,7 @@ async function sendReplyInChunks(bot, channelId, reply) {
 }
 
 async function sendUserMessageInChunks(ctx, message) {
-  const MAX_MESSAGE_LENGTH = 4096; // Максимальная длина сообщения в Telegram
-  const chunks = [];
-
-  let start = 0;
-  while (start < message.length) {
-    // Найдем позицию, чтобы завершить текущий блок на новой строке, но не превышать лимит
-    let end = start + MAX_MESSAGE_LENGTH;
-    if (end < message.length) {
-      const lastNewLine = message.lastIndexOf('\n', end);
-      if (lastNewLine > start) {
-        end = lastNewLine + 1; // Обрезаем на последнем символе новой строки
-      }
-    }
-    chunks.push(message.slice(start, end).trim());
-    start = end;
-  }
+  const chunks = splitMessageIntoChunks(message);
 
   for await (const chunk of chunks) {
     await ctx.reply(chunk, { parse_mode: 'Markdown' })
@@ -50,7 +40,16 @@ async function sendUserMessageInChunks(ctx, message) {
   }
 }
 
+async function sendDirectMessageInChunks(bot, chatId, message) {
+  const chunks = splitMessageIntoChunks(message);
+
+  for await (const chunk of chunks) {
+    await bot.telegram.sendMessage(chatId, chunk, { parse_mode: 'Markdown' });
+  }
+}
+
 module.exports = {
   sendReplyInChunks,
   sendUserMessageInChunks,
+  sendDirectMessageInChunks,
 };

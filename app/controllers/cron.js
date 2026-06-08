@@ -6,6 +6,7 @@ const {
 } = require('../constants/index');
 
 const { formatTime } = require('../helpers/timeHelper');
+const notificationHelper = require('../helpers/notificationHelper');
 const telegramHelper = require('../helpers/telegram');
 const warAlertHelper = require('../helpers/warAlert');
 const warAlertManager = require('../managers/warAlert');
@@ -116,6 +117,11 @@ module.exports = {
             console.error('cron warAlertNotification bot sendMessage:', e.message);
           });
       }
+
+      await notificationHelper.notifySubscribedUsers(bot, result, Boolean(statesOld))
+        .catch((e) => {
+          console.error('cron warAlertNotification notifySubscribedUsers:', e.message);
+        });
     });
   },
 };

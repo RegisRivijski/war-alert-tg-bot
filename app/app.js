@@ -5,6 +5,8 @@ const { Telegraf } = require('telegraf');
 
 const apiRoot = `${config.telegramBotApi.protocol}//${config.telegramBotApi.host}:${config.telegramBotApi.port}`;
 
+require('./classes/MongooseSingleton');
+
 const commands = require('./commands/index');
 const cron = require('./cron/index');
 

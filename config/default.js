@@ -23,7 +23,13 @@ module.exports = {
   db: {
     mongodb: {
       url: process.env.MONGODB_WAR_ALERT_TG_BOT_URL,
-      api_key: process.env.MONGODB_WAR_ALERT_TG_BOT_API_KEY,
+      options: {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+        family: 4,
+        retryWrites: true,
+      },
     },
   },
   rest: {

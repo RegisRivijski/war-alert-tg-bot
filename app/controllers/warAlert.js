@@ -15,7 +15,7 @@ module.exports = {
       });
 
     let reply = warAlertHelper.buildAlertRegionsReply(alerts);
-    reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
+    reply += '\n🔔 *Підпишіться на сповіщення* — /waralertsubscribe';
 
     await telegramHelper.sendUserMessageInChunks(ctx, reply)
       .catch((e) => {
@@ -40,10 +40,8 @@ module.exports = {
         throw e;
       });
 
-    const safeRegions = allRegions.filter((region) => !region.enabled);
-
-    let reply = warAlertHelper.buildSafeRegionsReply(safeRegions);
-    reply += '\n👁‍🗨 *Підписуйтесь на оновлення* — @warAlertTgUkraine';
+    let reply = warAlertHelper.buildSafeRegionsReply(allRegions);
+    reply += '\n🔔 *Підпишіться на сповіщення* — /waralertsubscribe';
 
     await telegramHelper.sendUserMessageInChunks(ctx, reply)
       .catch((e) => {
