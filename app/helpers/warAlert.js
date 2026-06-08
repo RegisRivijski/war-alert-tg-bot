@@ -128,6 +128,91 @@ module.exports = {
     return reply;
   },
 
+  getStateAlertStatus(stateData) {
+    if (stateData.enabled) {
+      return {
+        hasAlert: true,
+        stateLevel: true,
+        time: formatTime(stateData.enabled_at),
+        districts: [],
+      };
+    }
+
+    const districts = Object.keys(stateData.districts || {});
+    const activeDistricts = districts
+      .filter((district) => stateData.districts[district].enabled)
+      .map((district) => ({
+        district,
+        time: formatTime(stateData.districts[district].enabled_at),
+      }));
+
+    if (activeDistricts.length) {
+      return {
+        hasAlert: true,
+        stateLevel: false,
+        districts: activeDistricts,
+      };
+    }
+
+    return {
+      hasAlert: false,
+      time: formatTime(stateData.disabled_at),
+    };
+  },
+
+  buildSubscribedRegionsStatusReply(subscribedRegions, statesData) {
+    if (!subscribedRegions.length) {
+      return '*Статус підписаних областей*\n\n'
+        + 'Ви ще не підписані на жодну область.\n'
+        + 'Оберіть області командою /waralertsubscribe, щоб отримувати сповіщення та переглядати їхній статус.';
+    }
+
+    let reply = '*Статус ваших підписаних областей:*\n';
+    let hasAnyAlert = false;
+
+    for (const region of subscribedRegions) {
+      const stateData = statesData[region];
+
+      if (!stateData) {
+        reply += `\n❓ *${region}*\n — _дані недоступні_`;
+        continue;
+      }
+
+      const status = this.getStateAlertStatus(stateData);
+
+      if (status.hasAlert) {
+        hasAnyAlert = true;
+        reply += `\n\n🟥 *${region}* — _тривога_`;
+
+        if (status.stateLevel && status.time) {
+          reply += `\n — _оголошено: ${status.time}_`;
+        }
+
+        for (const district of status.districts) {
+          reply += `\n   🔸 ${district.district}`;
+          if (district.time) {
+            reply += `\n     — _оголошено: ${district.time}_`;
+          }
+        }
+      } else {
+        reply += `\n\n🟩 *${region}* — _без тривоги_`;
+        if (status.time) {
+          reply += `\n — _відбій: ${status.time}_`;
+        }
+      }
+    }
+
+    if (hasAnyAlert) {
+      reply += '\n\n⚠️ _Рекомендуємо негайно перейти в укриття!_';
+    } else {
+      reply += '\n\n🕊️ _У ваших підписаних областях зараз без тривоги._';
+    }
+
+    reply += '\n\n_Змінити підписки —_ /waralertsubscribe';
+
+    return reply;
+  },
+
   buildAlertRegionsReply(alerts) {
     if (!alerts.length) {
       return '🟢 На даний момент повітряна тривога відсутня по всіх областях України. Спокійного дня! 🕊️\n';

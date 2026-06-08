@@ -4,6 +4,8 @@ const callbackActions = require('../constants/callbackActions');
 const regionsHelper = require('../helpers/regionsHelper');
 const subscriptionKeyboard = require('../helpers/subscriptionKeyboard');
 const usersHelper = require('../helpers/usersHelper');
+const warAlertHelper = require('../helpers/warAlert');
+const warAlertManager = require('../managers/warAlert');
 
 const analyticsManager = require('../managers/analyticsManager');
 
@@ -63,7 +65,19 @@ module.exports = {
 
   async warAlertMySubscriptions(ctx, next) {
     const user = await usersHelper.ensureUser(ctx);
-    const text = subscriptionKeyboard.buildSubscriptionSummary(user.regions);
+    const statesData = await warAlertManager.getActiveAlertsVC()
+      .then((data) => data.states || {})
+      .catch((error) => {
+        console.error('subscriptionController warAlertMySubscriptions getActiveAlertsVC error:', error.message);
+        return null;
+      });
+
+    let text;
+    if (!statesData) {
+      text = 'Не вдалося завантажити статус тривоги. Спробуйте пізніше.';
+    } else {
+      text = warAlertHelper.buildSubscribedRegionsStatusReply(user.regions, statesData);
+    }
 
     await ctx.reply(text, { parse_mode: 'Markdown' })
       .catch((error) => {

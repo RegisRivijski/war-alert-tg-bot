@@ -51,11 +51,17 @@ function buildRegionsKeyboard(regions, subscribedRegions, page = 0) {
 
 function buildSubscriptionSummary(regions) {
   if (!regions.length) {
-    return 'Ви ще не підписані на жодну область.\nОберіть області нижче, щоб отримувати сповіщення про тривогу.';
+    return '*Підписка на області*\n\n'
+      + 'Ви ще не обрали жодну область.\n'
+      + 'Натисніть на область нижче, щоб увімкнути сповіщення про тривогу.\n\n'
+      + '_Переглянути поточний статус —_ /waralertmysubscriptions';
   }
 
-  const list = regions.map((region) => `🔹 ${region}`).join('\n');
-  return `*Ваші підписки:*\n${list}\n\n_Натисніть на область, щоб увімкнути або вимкнути сповіщення._`;
+  const list = regions.map((region) => `✅ ${region}`).join('\n');
+  return `*Підписка на області*\n\n`
+    + `*Обрані області:*\n${list}\n\n`
+    + '_Натисніть на область, щоб увімкнути або вимкнути сповіщення._\n'
+    + '_Переглянути поточний статус —_ /waralertmysubscriptions';
 }
 
 module.exports = {

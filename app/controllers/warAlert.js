@@ -15,7 +15,8 @@ module.exports = {
       });
 
     let reply = warAlertHelper.buildAlertRegionsReply(alerts);
-    reply += '\n🔔 *Підпишіться на сповіщення* — /waralertsubscribe';
+    reply += '\n🔔 *Підпишіться на сповіщення* — /waralertsubscribe\n'
+      + '📍 *Статус ваших областей* — /waralertmysubscriptions';
 
     await telegramHelper.sendUserMessageInChunks(ctx, reply)
       .catch((e) => {
@@ -41,7 +42,8 @@ module.exports = {
       });
 
     let reply = warAlertHelper.buildSafeRegionsReply(allRegions);
-    reply += '\n🔔 *Підпишіться на сповіщення* — /waralertsubscribe';
+    reply += '\n🔔 *Підпишіться на сповіщення* — /waralertsubscribe\n'
+      + '📍 *Статус ваших областей* — /waralertmysubscriptions';
 
     await telegramHelper.sendUserMessageInChunks(ctx, reply)
       .catch((e) => {
