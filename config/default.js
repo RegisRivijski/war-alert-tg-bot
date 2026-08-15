@@ -16,8 +16,10 @@ module.exports = {
     },
   },
   analytics: {
-    Amplitude: {
-      key: process.env.AMPLITUDE_WAR_ALERT_TG_API_KEY,
+    umami: {
+      host: process.env.UMAMI_HOST,
+      websiteId: process.env.UMAMI_WEBSITE_ID_WAR_ALERT,
+      hostname: 'war-alert',
     },
   },
   db: {

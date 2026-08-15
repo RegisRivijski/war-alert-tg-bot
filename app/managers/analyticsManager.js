@@ -1,4 +1,4 @@
-const AmplitudeSingleton = require('../classes/AmplitudeSingleton');
+const UmamiSingleton = require('../classes/UmamiSingleton');
 
 module.exports = {
   logEvent({
@@ -6,10 +6,11 @@ module.exports = {
     userId,
     eventProperties,
   }) {
-    return AmplitudeSingleton.logEvent({
+    return UmamiSingleton.logEvent({
       event_type: eventType,
       user_id: String(userId),
       event_properties: eventProperties,
     });
   },
 };
+
