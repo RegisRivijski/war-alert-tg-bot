@@ -56,6 +56,7 @@ module.exports = {
     analyticsManager.logEvent({
       eventType: analyticEventTypes.SUBSCRIBE_MENU,
       userId: usersHelper.getChatIdFromCtx(ctx),
+      ctx,
     }).catch((error) => {
       console.error('subscriptionController warAlertSubscribe analytics error:', error.message);
     });
@@ -87,6 +88,7 @@ module.exports = {
     analyticsManager.logEvent({
       eventType: analyticEventTypes.MY_SUBSCRIPTIONS,
       userId: usersHelper.getChatIdFromCtx(ctx),
+      ctx,
     }).catch((error) => {
       console.error('subscriptionController warAlertMySubscriptions analytics error:', error.message);
     });
@@ -133,6 +135,7 @@ module.exports = {
       analyticsManager.logEvent({
         eventType: analyticEventTypes.TOGGLE_REGION,
         userId: chatId,
+        ctx,
       }).catch((error) => {
         console.error('subscriptionController onRegionCallback analytics error:', error.message);
       });

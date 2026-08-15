@@ -25,6 +25,7 @@ module.exports = {
     analyticsManager.logEvent({
       eventType: analyticEventTypes.START,
       userId: ctx.update?.message?.from?.id,
+      ctx,
     })
       .catch((e) => {
         console.error('standardController start analyticsManager logEvent:', e.message);
@@ -52,6 +53,7 @@ module.exports = {
     analyticsManager.logEvent({
       eventType: analyticEventTypes.HELP,
       userId: ctx.update?.message?.from?.id,
+      ctx,
     })
       .catch((e) => {
         console.error('standardController start analyticsManager logEvent:', e.message);

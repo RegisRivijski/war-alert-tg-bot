@@ -26,6 +26,7 @@ module.exports = {
     analyticsManager.logEvent({
       eventType: analyticEventTypes.CHECK_ACTIVE,
       userId: ctx.update?.message?.from?.id,
+      ctx,
     })
       .catch((e) => {
         console.error('warAlertController warAlertCheckAll analyticsManager logEvent:', e.message);
@@ -53,6 +54,7 @@ module.exports = {
     analyticsManager.logEvent({
       eventType: analyticEventTypes.CHECK_DISABLED,
       userId: ctx.update?.message?.from?.id,
+      ctx,
     })
       .catch((e) => {
         console.error('warAlertController warAlertCheckAll analyticsManager logEvent:', e.message);
