@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:18-alpine
 MAINTAINER "Artur Petrov petrov0397@gmail.com"
 
 RUN apk --no-cache upgrade && \
