@@ -10,7 +10,6 @@ const client = host
     timeout: 2500,
     headers: {
       'Content-Type': 'application/json',
-      'User-Agent': 'Mozilla/5.0 (compatible; WarAlertBot/1.0)',
     },
   })
   : null;
@@ -50,6 +49,18 @@ function countryFromLanguage(language) {
   return LANGUAGE_COUNTRY[lang] || 'UA';
 }
 
+function visitorIp(userId) {
+  const n = Math.abs(Number(userId)) || 1;
+  const c = Math.floor(n / 254) % 256;
+  const d = (n % 254) + 1;
+  return `198.51.${c}.${d}`;
+}
+
+function visitorUserAgent(userId) {
+  const uid = encodeURIComponent(String(userId || 'anon'));
+  return `Mozilla/5.0 (KHTML, like Gecko) Telegram/11.0 uid/${uid}`;
+}
+
 function sanitizeData(eventProperties) {
   if (!eventProperties || typeof eventProperties !== 'object' || Array.isArray(eventProperties)) {
     return undefined;
@@ -83,6 +94,7 @@ module.exports = {
     }
 
     const resolvedCountry = (country || countryFromLanguage(language) || 'UA').toUpperCase();
+    const userAgent = visitorUserAgent(userId);
     const payload = {
       website: websiteId,
       hostname,
@@ -90,19 +102,23 @@ module.exports = {
       url: `/${String(eventType).slice(0, 50)}`,
       name: String(eventType).slice(0, 50),
       id: userId === undefined || userId === null ? undefined : String(userId),
+      userAgent,
       data: sanitizeData({
         ...eventProperties,
         country: resolvedCountry,
       }),
     };
 
+    const headers = {
+      'User-Agent': userAgent,
+      'CF-IPCountry': resolvedCountry,
+      'X-Forwarded-For': userId === undefined || userId === null || userId === ''
+        ? '1.1.1.1'
+        : visitorIp(userId),
+    };
+
     return client
-      .post('/api/send', { type: 'event', payload }, {
-        headers: {
-          'CF-IPCountry': resolvedCountry,
-          'X-Forwarded-For': '1.1.1.1',
-        },
-      })
+      .post('/api/send', { type: 'event', payload }, { headers })
       .then(() => undefined)
       .catch(() => undefined);
   },
