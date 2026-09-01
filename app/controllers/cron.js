@@ -1,14 +1,8 @@
 const cron = require('node-cron');
 const NodeCache = require('node-cache');
 
-const {
-  CHANNEL_ID,
-} = require('../constants/index');
-
 const { formatTime } = require('../helpers/timeHelper');
 const notificationHelper = require('../helpers/notificationHelper');
-const telegramHelper = require('../helpers/telegram');
-const warAlertHelper = require('../helpers/warAlert');
 const warAlertManager = require('../managers/warAlert');
 
 const statesCache = new NodeCache();
@@ -97,27 +91,11 @@ module.exports = {
         }
       }
 
-      let reply = '';
-      if (result.enabled.length) {
-        reply += warAlertHelper.buildAlertRegionsReply(result.enabled);
-      }
-
-      if (result.disabled.length) {
-        if (reply.length) reply += '\n';
-        reply += warAlertHelper.buildSafeRegionsReply(result.disabled);
-      }
-
       if (states.length) {
         statesCache.set('states', statesNew);
       }
 
-      if (reply) {
-        await telegramHelper.sendReplyInChunks(bot, CHANNEL_ID, reply)
-          .catch((e) => {
-            console.error('cron warAlertNotification bot sendMessage:', e.message);
-          });
-      }
-
+      // Channel posts moved to channel-automation-tg-bot.
       await notificationHelper.notifySubscribedUsers(bot, result, Boolean(statesOld))
         .catch((e) => {
           console.error('cron warAlertNotification notifySubscribedUsers:', e.message);
